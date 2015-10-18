@@ -1,0 +1,13 @@
+[
+	{
+		"value":"",
+		"text":"---请选择---",
+		"selected":true
+	},{
+		"value":"1",
+		"text":"男"
+	},{
+		"value":"2",
+		"text":"女"
+	}
+]

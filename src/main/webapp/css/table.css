@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+.amTable{
+	padding-left:10px;
+}
+.amTable td{
+	font-size: 14px;
+}
+.rightTd{
+	padding-top: 10px;
+}

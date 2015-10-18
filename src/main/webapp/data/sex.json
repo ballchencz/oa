@@ -1,0 +1,10 @@
+[
+	{
+		"value":"1",
+		"text":"男",
+		"selected":true
+	},{
+		"value":"2",
+		"text":"女"
+	}
+]
