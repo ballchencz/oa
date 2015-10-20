@@ -11,7 +11,6 @@
 <title>文件管理</title>
 </head>
 <body>
-
 		<table class="easyui-datagrid" id="fileManagePageTable" data-options="				
 				fit:true,
 				border:false,
@@ -76,10 +75,28 @@
 	            data-options="
 	                iconCls: 'icon-save',
 	                closed:true,
+	                modal:true,
 	                toolbar: '#dlg-toolbar',
                 	buttons: '#dlg-buttons'
 	            ">
-	        <div id="container">
+			<div id="uploadFile_container">
+				<table id="file_content_table" class="easyui-datagrid" data-options="
+						singleSelect:false,
+						collapsible:true,
+						fitColumns:true,
+						border:false,
+						striped:true">
+					<thead>
+						<tr>
+							<th data-options="field:'id',checkbox:true"></th>
+							<th data-options="field:'fileName',width:100">文件名称</th>
+							<th data-options="field:'fileSize',width:80">文件大小</th>
+							<th data-options="field:'progress',hidden:true,width:30"></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+<%--	        <div id="container">
 			<table class="easyui-datagrid"
 		            data-options="singleSelect:true,collapsible:true,collapsible: true,fitColumns: true,border:false">
 		        <thead>
@@ -89,13 +106,13 @@
 		            </tr>
 		        </thead>
 		    </table>
-		    </div>
+		    </div>--%>
 	    </div>
- 	    <div id="dlg-toolbar" style="padding:2px 0">
+	    <div id="dlg-toolbar" style="padding:2px 0">
 	        <table cellpadding="0" cellspacing="0" style="width:100%">
 	            <tr>
 	                <td style="padding-left:2px">
-	                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">选择文件</a>
+	                    <a href="javascript:void(0)" id="chooseFile" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">选择文件</a>
 	                </td>
 	            </tr>
 	        </table>
@@ -103,10 +120,9 @@
 	    <div id="dlg-buttons">
 	        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:alert('save')">保存</a>
 	        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#filemanager_upload').dialog('close')">取消</a>
-	    </div>
+	    </div><%-- --%>
 		<script type="text/javascript">
 		 	//.removeClass('lines-both lines-no lines-right')
-		 	//console.info('${parentId}');
 			var rowEdit = null;
 			var contextPath = "<%=path%>";
 			var uploader;
@@ -246,10 +262,10 @@
 				fileUplaodDialog.dialog('open');
 			}
 			
-		</script>
- 		<script type="text/javascript" src="<%=path%>/js/plupload_1_5_7/plupload/js/plupload.full.js"></script>
-		<script type="text/javascript" src="<%=path%>/js/plupload_1_5_7/plupload/js/i18n/zh-CN.js"></script>
-		<script type="text/javascript" src="<%=path%>/js/com/clearnight/oa/filemanage/FileManagePage.js"></script><%-- --%>
+		</script><%----%>
+	 	<script type="text/javascript" src="<%=path%>/js/plupload-2.1.8/js/plupload.full.min.js"></script>
+		<script type="text/javascript" src="<%=path%>/js/plupload-2.1.8/js/i18n/zh_CN.js"></script><%----%>
+		<script type="text/javascript" src="<%=path%>/js/com/clearnight/oa/filemanage/fileManagePage.js"></script>
 		<style type="text/css">
 			.aClass:link,.aClass:visited{ 
 			 text-decoration:none;  /*超链接无下划线*/
