@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.clearnight.oa.base.util.LoginInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import com.clearnight.oa.sftp.service.ISftpService;
 import com.clearnight.oa.sftp.util.SftpUtils;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -108,25 +110,8 @@ public class FileManageServiceImpl implements IFileManageService {
 		}
 	}
 	@Override
-	public void deleteFileBean(String id) throws JSchException, SftpException {
-		String hql = "FROM FileBean t WHERE t.parentId = :parentId";
-		FileBean fileBean = this.getFileBeanById(id);
-		String fileType = fileBean.getFileType();
-		if(!fileType.equals(FileManageConsts.FOLDERSTR)){
-			Sftp sftp = this.getStartSftpServiceInfo();
-			if(sftp!=null){
-				SftpUtils sftpUtils = new SftpUtils(sftp.getUserName(), sftp.getPassword(), sftp.getHost(), sftp.getPort());
-					sftpUtils.removeFile(fileBean.getUserId());
-			}
-		}
-		this.fileManageDao.deleteFileBean(fileBean);
-		Map<String,Object> queryParams = new HashMap<String,Object>();
-		queryParams.put("parentId", id);
-		List<FileBean> fileBeans = this.fileManageDao.getFileBeanListByParam(hql, queryParams);
-		for(FileBean file : fileBeans){
-			this.deleteFileBean(file.getId());
-		}
-		
+	public void deleteFileBean(String id) throws Exception {
+			this.deleteFile(id);
 	}
 	@Override
 	public FileBean getFileBeanById(String id) {
@@ -134,9 +119,90 @@ public class FileManageServiceImpl implements IFileManageService {
 		FileBean fileBean = this.fileManageDao.getFileBeanById(hql);
 		return fileBean;
 	}
-	
-	
-	
+
+	@Override
+	public boolean uploadFile(String name, MultipartFile file,String parentId) {
+		Sftp sftp = this.getStartSftpServiceInfo();
+		boolean flag = false;
+		if(sftp!=null){
+			SftpUtils sftpUtils = null;
+			try {
+				sftpUtils = new SftpUtils(sftp.getUserName(), sftp.getPassword(), sftp.getHost(), sftp.getPort());
+				/*文件在数据库中的名字（不包含扩展名）*/
+				String fileDBName = name.substring(0,name.lastIndexOf("."));
+				/*文件在文件服务器中的名字（包含扩展名）*/
+				String fileServerName = UUID.randomUUID().toString()+name.substring(name.lastIndexOf("."),name.length());
+				/*文件在文件服务器中的路径*/
+				String filePath = "/"+fileServerName;
+				/*文件类型（不包含"."）*/
+				String fileType = name.substring(name.lastIndexOf(".")+1,name.length());
+				sftpUtils.connect();
+				sftpUtils.uploadFile(file.getInputStream(),filePath);
+				flag = true;
+				if(flag){
+					Date date = new Date();
+					FileBean fileBean = new FileBean();
+					fileBean.setId(UUID.randomUUID().toString());
+					fileBean.setFileName(fileDBName);
+					fileBean.setFileSize(file.getSize());
+					fileBean.setFileType(fileType);
+					fileBean.setFileUrl(filePath);
+					fileBean.setLastModifyTime(date);
+					fileBean.setUploadTime(date);
+					fileBean.setUserId(LoginInfo.getLoginUser().getId());
+					fileBean.setParentId(parentId);
+					flag = this.uploadFile(fileBean);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SftpException e) {
+				e.printStackTrace();
+			} catch (JSchException e) {
+				e.printStackTrace();
+			}finally {
+				if(sftpUtils!=null){
+					sftpUtils.disconnect();
+				}
+			}
+		}
+		return flag;
+	}
+
+	private boolean uploadFile(FileBean fileBean){
+		boolean flag =false;
+		try{
+			this.fileManageDao.saveFileBean(fileBean);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	private void deleteFile(String id) throws Exception{
+		/*获得当前id的文件对象*/
+		FileBean fileBean = this.getFileBeanById(id);
+		if(fileBean!=null){
+			/*如果当前id文件为文件夹时*/
+			if(fileBean.getFileType().equals(FileManageConsts.FOLDERSTR)){
+				/*获得当前文件的子文件*/
+				Account account = LoginInfo.getLoginUser();
+				List<FileBean> fileBeans = this.fileManageDao.getFileBeanByParentId(id,account);
+				this.fileManageDao.deleteFileBean(fileBean);
+				for(FileBean fileBean1 : fileBeans){
+					this.deleteFile(fileBean1.getId());
+				}
+			}else{
+				Sftp sftp = this.sftpService.getStartSftpServer();
+				SftpUtils sftpUtils = new SftpUtils(sftp.getUserName(), sftp.getPassword(), sftp.getHost(), sftp.getPort());
+				sftpUtils.connect();
+				sftpUtils.removeFile(fileBean.getFileUrl());
+				sftpUtils.disconnect();
+				this.fileManageDao.deleteFileBean(fileBean);
+			}
+		}
+	}
+
 
 
 }

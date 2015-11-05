@@ -6,6 +6,7 @@ import com.clearnight.oa.filemanage.bean.FileBean;
 import com.clearnight.oa.login.bean.Account;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface IFileManageService {
@@ -42,7 +43,7 @@ public interface IFileManageService {
 	 * 删除文件
 	 * @param id 文件ID
 	 */
-	public void deleteFileBean(String id)throws JSchException, SftpException;
+	public void deleteFileBean(String id)throws Exception;
 	
 	/**
 	 * 根据id查询文件
@@ -50,4 +51,13 @@ public interface IFileManageService {
 	 * @return FileBean
 	 */
 	public FileBean getFileBeanById(String id);
+
+	/**
+	 * 上传文件
+	 * @param name 文件名称
+	 * @param file 文件对象
+	 * @param parentId 上级ID
+	 * @return boolean
+	 */
+	public boolean uploadFile(String name,MultipartFile file,String parentId);
 }

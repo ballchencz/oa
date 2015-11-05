@@ -1,11 +1,14 @@
 package com.clearnight.oa.filemanage.action;
 import java.io.IOException;
 
+import com.clearnight.oa.filemanage.bean.FileUpload;
+import com.clearnight.oa.sftp.util.SftpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -86,7 +89,7 @@ public class FileManageAction {
 	}
 	
 	/**
-	 * 根据类型获得图片
+	 * 根据类型获得文件代表图片
 	 * @param imgType
 	 * @return
 	 * @throws IOException
@@ -114,16 +117,38 @@ public class FileManageAction {
 	public String deleteFile(String [] ids){
 		boolean flag = false;
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("flag", flag);
 		try {
 			for(String id : ids){
 					this.fileManageService.deleteFileBean(id);
 					flag = true;
 					jsonObject.put("info", "删除成功");
 			}
-		} catch (JSchException | SftpException e) {
+		} catch (Exception e) {
 			flag = false;
 			jsonObject.put("info", "删除失败");
+			e.printStackTrace();
+		}
+		jsonObject.put("flag", flag);
+		return jsonObject.toJSONString();
+	}
+
+	/**
+	 * 文件上传
+	 * @param name 文件名称
+	 * @param file 文件
+	 * @param fileUpload 文件上传bean
+	 * @return String
+	 */
+	@RequestMapping(value = "/uploadFile",method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String uploadFile(String name ,MultipartFile file,FileUpload fileUpload,String parentId){
+		JSONObject jsonObject = new JSONObject();
+		boolean flag = this.fileManageService.uploadFile(name,file,parentId);
+		jsonObject.put("flag",flag);
+		if(flag){
+			jsonObject.put("info","上传成功");
+		}else{
+			jsonObject.put("info","上传失败");
 		}
 		return jsonObject.toJSONString();
 	}

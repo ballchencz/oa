@@ -32,6 +32,7 @@ public class FileManageDaoImpl implements IFileManageDao {
 		}else{
 			hql+= " AND t.parentId = ''";
 		}
+		hql += " order by t.lastModifyTime desc";
 		List<FileBean> fileBean = baseDao.find(hql, queryParam);
 		return fileBean;
 	}
