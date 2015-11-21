@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.clearnight.oa.base.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,8 @@ public class UserServiceImpl implements IUserService {
 
 	/*------------------spring注入---------------------*/
 	private IUserDao userDao;
+	@Autowired
+	private IBaseService baseService;
 	
 	
 	@Override
@@ -49,8 +52,8 @@ public class UserServiceImpl implements IUserService {
 		String hql = "FROM UserBasic t";
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		
-		hql += whereHql(user,queryMap);
-		hql += orderHql(pageHelper);
+		hql += this.baseService.whereHQL(user,queryMap);
+		hql += this.baseService.orderHQL(pageHelper);
 		List<UserBasic> users = userDao.getUsersPagenation(hql, queryMap, pageHelper.getRows(), pageHelper.getPage());
 		return users;
 	}
@@ -85,63 +88,22 @@ public class UserServiceImpl implements IUserService {
 	        return map;  
 	  
 	    }  
-	
-	/**
-	 * 查询hql语句组装
-	 * @param user
-	 * @param params
-	 * @return String
-	 */
-	private String whereHql(UserBasic user, Map<String, Object> params) {
-		String hql = "";
-		if (user != null) {
-			hql += " where 1=1 ";
-			if (user.getUserName() != null) {
-				hql += " and t.userName like :userName";
-				params.put("userName", "%%" + user.getUserName() + "%%");
-			}
-			if (user.getBirthday() != null) {
-				hql += " and t.bithday = :birthday";
-				params.put("birthday", user.getBirthday());
-			}
-			if (user.getUserSex() != null) {
-				hql += " and t.userSex = :userSex";
-				params.put("userSex", user.getUserSex());
-			}
-			if(user.getUserAge()!=null){
-				hql += " and t.userAge = :userAge";
-				params.put("userAge", user.getUserAge());
-			}
-			if(user.getNation()!=null){
-				hql += " and t.nation = :nation";
-				params.put("nation", user.getNation());
-			}
-	
-		}
-		return hql;
-	}
-	
-	/**
-	 * 排序字段的查询语句组装
-	 * @param ph
-	 * @return String
-	 */
-	private String orderHql(PageHelper ph) {
-		String orderString = "";
-		if (ph.getSort() != null && ph.getOrder() != null) {
-			orderString = " order by t." + ph.getSort() + " " + ph.getOrder();
-		}
-		return orderString;
-	}
-	
+
 	@Override
 	public long getUsersTotal(UserBasic userBasic,PageHelper pageHelper) {
 		String hql = "SELECT COUNT(*) FROM UserBasic t";
 		Map<String,Object> queryMap = new HashMap<String,Object>();
-		hql += whereHql(userBasic,queryMap);
-		hql += orderHql(pageHelper);
+		hql += this.baseService.whereHQL(userBasic,queryMap);
+		hql += this.baseService.orderHQL(pageHelper);
 		return userDao.getUsersTotal(hql,queryMap);
 	}
+
+	@Override
+	public UserBasic getUserBasicById(String id){
+		return this.userDao.getUserBasicById(id);
+	}
+
+
 	/*-----------------setter、getter方法--------------*/
 	public IUserDao getUserDao() {
 		return userDao;

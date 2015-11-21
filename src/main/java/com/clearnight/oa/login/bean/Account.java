@@ -1,9 +1,7 @@
 package com.clearnight.oa.login.bean;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -15,7 +13,7 @@ public class Account {
 	private String id;
 	private String accountName;
 	private String accountPwd;
-
+	private Date insertDate;
 
 	
 	public Account() {
@@ -56,4 +54,13 @@ public class Account {
 		this.accountPwd = accountPwd;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "INSERT_DATE", length = 19)
+	public Date getInsertDate() {
+		return insertDate;
+	}
+
+	public void setInsertDate(Date insertDate) {
+		this.insertDate = insertDate;
+	}
 }

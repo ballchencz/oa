@@ -291,16 +291,10 @@ public class SftpUtils {
 	public static void main(String[] args) throws JSchException {
 		SftpUtils su = new SftpUtils("admin", "admin", "127.0.0.1", 22);
 		su.connect();
-		File file  = new File("E:/psb.jpg");
-		String fileName = file.getName();
-		int pointIndex = fileName.lastIndexOf(".");
-		String fileType = fileName.substring(pointIndex, fileName.length());
-		fileName = fileName.substring(0, pointIndex);
-		String newFileName = UUID.randomUUID().toString()+fileType;
-		String filePath = "/systemImg/"+newFileName;		 
+		String filePath = "/93696987-5fb8-424d-97b8-457757cd6f79.jpg";
 		try {
-			InputStream in = new FileInputStream(file);
-			su.uploadFile(in, filePath);
+			byte [] b = su.getFileByteArrayByFileArray(filePath);
+			System.out.print(b);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -311,7 +305,8 @@ public class SftpUtils {
 			su.disconnect();
 		}
 	}
-	
+
+
 	
 	
 	/*-------------------------------setter、getter方法---------------------------------------*/

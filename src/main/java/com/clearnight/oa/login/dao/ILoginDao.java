@@ -3,6 +3,7 @@ package com.clearnight.oa.login.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.clearnight.oa.base.bean.PageHelper;
 import com.clearnight.oa.login.bean.Account;
 
 public interface ILoginDao {
@@ -47,4 +48,28 @@ public interface ILoginDao {
 	 * @return 查询的结果
 	 */
 	public Account validLogin(String hql, Map<String, Object> queryMap);
+
+	/**
+	 * 根据查询语句和参数获得账户集合
+	 * @param hql 查询语句
+	 * @param queryParams 查询参数
+	 * @return List<Account> 查询的结果集
+	 */
+	public List<Account> getAccountPagenationDate(String hql,Map<String,Object> queryParams,PageHelper ph);
+
+	/**
+	 * 根据查询语句和查询参数获得数量
+	 * @param hql 查询语句
+	 * @param queryParams 查询参数
+	 * @return Long 查询的结果
+	 */
+	public Long getAccountCount(String hql,Map<String,Object> queryParams);
+
+	/**
+	 * 删除用户
+	 * @param hql
+	 * @param params
+	 */
+	public void deleteAcccount(String hql,Map<String,Object> params);
+
 }

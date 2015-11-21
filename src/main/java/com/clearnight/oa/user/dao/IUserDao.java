@@ -40,4 +40,11 @@ public interface IUserDao {
 	 * @return long 记录数
 	 */
 	public long getUsersTotal(String hql, Map<String, Object> queryMap);
+
+	/**
+	 * 根据用户ID获得用户
+	 * @param id
+	 * @return UserBasic
+	 */
+	public UserBasic getUserBasicById(String id);
 }

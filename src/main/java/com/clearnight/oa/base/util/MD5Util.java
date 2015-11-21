@@ -41,4 +41,9 @@ public class MD5Util {
 		}
 	}
 
+	public static void main(String [] args){
+		String pwd = new MD5Util().md5("admin");
+		System.out.print(pwd);
+	}
+
 }

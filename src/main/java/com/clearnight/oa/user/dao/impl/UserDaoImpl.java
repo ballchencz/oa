@@ -56,6 +56,11 @@ public class UserDaoImpl implements IUserDao{
 		}
 		return count;
 	}
+
+	@Override
+	public UserBasic getUserBasicById(String id){
+		return this.baseDao.get(UserBasic.class,id);
+	}
 	/*-----------------setter、getter方法--------------*/
 	public IBaseDao<UserBasic> getBaseDao() {
 		return baseDao;

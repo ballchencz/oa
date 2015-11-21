@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
+
+import com.clearnight.oa.base.consts.BaseConsts;
+import com.clearnight.oa.filemanage.bean.FileBean;
+import com.clearnight.oa.filemanage.service.IFileManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -21,9 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.clearnight.oa.base.bean.PageHelper;
-import com.clearnight.oa.base.consts.BaseConsts;
 import com.clearnight.oa.user.bean.UserBasic;
 import com.clearnight.oa.user.service.IUserService;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
@@ -32,6 +36,7 @@ public class UserAjaxAction {
 
 	/*------------------spring注入------------------------*/
 	private IUserService userService;
+	private IFileManageService fileManageService;
 	
 	/*------------------公用常量---------------------------*/
 	private HttpHeaders headers = new HttpHeaders();     
@@ -52,38 +57,49 @@ public class UserAjaxAction {
     	/*根据参数获得用户对象集合*/
     	List<UserBasic> users = userService.getUsersPagenation(user,pageHelper);
     	JSONObject jsonObject = new JSONObject();
-    	
     	JSONArray jsonArray = JSONArray.parseArray(JSONArray.toJSONStringWithDateFormat(users, BaseConsts.dateStringFormat));
     	jsonObject.put("rows", jsonArray.toArray());
     	jsonObject.put("total", userService.getUsersTotal(user,pageHelper));
-    	
     	responseEntity = new ResponseEntity<String>(jsonObject.toJSONString(), headers, HttpStatus.OK);
     	return responseEntity;
     }
     
     @RequestMapping(value="/aMUser",method=RequestMethod.POST)
-    public ResponseEntity<String> aMUser(UserBasic user){
+    public ResponseEntity<String> aMUser(UserBasic user,MultipartFile multipartFile){
     	
     	headers.setContentType(mediaType);
     	/*创建返回对象*/
     	JSONObject responseJson = new JSONObject();
     	//UserBasic user = new UserBasic();
     	if(user.getId().equals("")){/*如果用户ID等于null,说明为添加*/    
-    		try {				
+    		try {
+				FileBean fileBean = null;
     			user.setId(UUID.randomUUID().toString());
+				if(multipartFile.getOriginalFilename()!=null && !multipartFile.getOriginalFilename().equals("")){
+					fileBean = this.fileManageService.uploadFile(multipartFile.getOriginalFilename(),multipartFile,"",user.getId());
+					user.setFileBeanId(fileBean.getId());
+				}
     			userService.addUserBasic(user);
     			responseJson.put("status", true);
     			responseJson.put("info", "添加成功！");
 			} catch (Exception e) {
+				e.printStackTrace();
     			responseJson.put("status", false);
     			responseJson.put("info", "添加失败！");
 			}
     	}else{/*如果用户ID不等于null，说明为修改*/
-    		try {				
+    		try {
+				if(multipartFile.getOriginalFilename()!=null && !multipartFile.getOriginalFilename().equals("")){
+					//UserBasic userBasic = this.userService.getUserBasicById(user.getId());
+					this.fileManageService.deleteFileBean(user.getFileBeanId());
+					FileBean fileBean = this.fileManageService.uploadFile(multipartFile.getOriginalFilename(),multipartFile,"",user.getId());
+					user.setFileBeanId(fileBean.getId());
+				}
     			userService.updateUserBasic(user);
     			responseJson.put("status", true);
     			responseJson.put("info", "修改成功！");
 			} catch (Exception e) {
+				e.printStackTrace();
     			responseJson.put("status", true);
     			responseJson.put("info", "修改失败！");
 			}
@@ -121,6 +137,9 @@ public class UserAjaxAction {
 		this.userService = userService;
 	}
 
+	public IFileManageService getFileManageService(){return fileManageService;}
+	@Autowired
+	public void setFileManageService(IFileManageService fileManageService){ this.fileManageService = fileManageService;}
     
     
     

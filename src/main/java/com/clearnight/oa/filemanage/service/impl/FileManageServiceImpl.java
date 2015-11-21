@@ -121,9 +121,10 @@ public class FileManageServiceImpl implements IFileManageService {
 	}
 
 	@Override
-	public boolean uploadFile(String name, MultipartFile file,String parentId) {
+	public FileBean uploadFile(String name, MultipartFile file,String parentId,String userId) {
 		Sftp sftp = this.getStartSftpServiceInfo();
 		boolean flag = false;
+		FileBean fileBean = null;
 		if(sftp!=null){
 			SftpUtils sftpUtils = null;
 			try {
@@ -141,7 +142,7 @@ public class FileManageServiceImpl implements IFileManageService {
 				flag = true;
 				if(flag){
 					Date date = new Date();
-					FileBean fileBean = new FileBean();
+					fileBean = new FileBean();
 					fileBean.setId(UUID.randomUUID().toString());
 					fileBean.setFileName(fileDBName);
 					fileBean.setFileSize(file.getSize());
@@ -151,21 +152,25 @@ public class FileManageServiceImpl implements IFileManageService {
 					fileBean.setUploadTime(date);
 					fileBean.setUserId(LoginInfo.getLoginUser().getId());
 					fileBean.setParentId(parentId);
+					fileBean.setUserIdForUserPhoto(userId);
 					flag = this.uploadFile(fileBean);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				fileBean = null;
 			} catch (SftpException e) {
 				e.printStackTrace();
+				fileBean = null;
 			} catch (JSchException e) {
 				e.printStackTrace();
+				fileBean = null;
 			}finally {
 				if(sftpUtils!=null){
 					sftpUtils.disconnect();
 				}
 			}
 		}
-		return flag;
+		return fileBean;
 	}
 
 	private boolean uploadFile(FileBean fileBean){
@@ -203,6 +208,18 @@ public class FileManageServiceImpl implements IFileManageService {
 		}
 	}
 
-
-
+	@Override
+	public byte[] getFileBeanByteByFileId(String fileId) throws JSchException, SftpException, IOException{
+		FileBean fileBean = this.getFileBeanById(fileId);
+		byte[] b = null;
+		if(fileBean!=null){
+			Sftp sftp = sftpService.getStartSftpServer();
+			SftpUtils sftpUtils = new SftpUtils(sftp.getUserName(), sftp.getPassword(), sftp.getHost(), sftp.getPort());
+			sftpUtils.connect();
+			//String fileUrl = fileBean.getFileUrl().substring(1, fileBean.getFileUrl().length());
+			b = sftpUtils.getFileByteArrayByFileArray(fileBean.getFileUrl());
+			//sftpUtils.disconnect();
+		}
+		return b;
+	}
 }

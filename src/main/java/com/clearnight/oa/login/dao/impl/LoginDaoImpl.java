@@ -1,5 +1,6 @@
 package com.clearnight.oa.login.dao.impl;
 
+import com.clearnight.oa.base.bean.PageHelper;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -59,7 +60,23 @@ public class LoginDaoImpl implements ILoginDao {
 		return account;
 	}
 
-	
+	@Override
+	public List<Account> getAccountPagenationDate(String hql, Map<String, Object> queryParams,PageHelper ph) {
+		List<Account> accounts = this.baseDao.find(hql,queryParams,ph.getPage(),ph.getRows());
+		return accounts;
+	}
+
+	@Override
+	public Long getAccountCount(String hql, Map<String, Object> queryParams) {
+		Long count = this.baseDao.count(hql,queryParams);
+		return count;
+	}
+
+	@Override
+	public void deleteAcccount(String hql, Map<String, Object> params) {
+		this.baseDao.delete(hql,params);
+	}
+
 	/*---------------setter、getter方法----------------------------*/
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;

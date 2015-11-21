@@ -29,6 +29,9 @@ public class MenuServiceImpl implements IMenuService {
 
 	@Override
 	public void addMenu(MenuInfo menuInfo) {
+		if(menuInfo.getParentId()!=null && menuInfo.getParentId().trim().equals("")){
+			menuInfo.setParentId(null);
+		}
 		this.menuDao.addMenu(menuInfo);
 		
 	}
@@ -65,8 +68,7 @@ public class MenuServiceImpl implements IMenuService {
 		if(null==fid){			
 			hql = "FROM MenuInfo WHERE parentId IS NULL";
 			menuInfoList = this.menuDao.getMenuInfoList(hql);
-		}
-		else{			
+		}else{
 			hql = "FROM MenuInfo WHERE parentId = :fid";
 			menuInfoList = this.menuDao.getMenuInfoList(hql, queryMap);
 		}

@@ -1,15 +1,10 @@
 package com.clearnight.oa.user.bean;
 
+import com.clearnight.oa.filemanage.bean.FileBean;
+
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-
+import javax.persistence.*;
 
 
 @Entity
@@ -84,6 +79,11 @@ public class UserBasic {
 	@Column(name = "EMAIL", length = 200)
 	private String email;
 
+	/**
+	 * 用户头像
+	 */
+	@Column(name = "FILE_BEAN_ID",length = 50)
+	private String fileBeanId;
 
 	public UserBasic() {
 	}
@@ -219,5 +219,12 @@ public class UserBasic {
 	public void setIdNum(String idNum) {
 		this.idNum = idNum;
 	}
-	
+
+	public String getFileBeanId() {
+		return fileBeanId;
+	}
+
+	public void setFileBeanId(String fileBeanId) {
+		this.fileBeanId = fileBeanId;
+	}
 }

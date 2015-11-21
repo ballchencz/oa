@@ -50,12 +50,33 @@ public class LoginAction {
 	public String toCenterPage(){
 		return "/login/center";
 	}
-	
+
+	/**
+	 * 转向时钟页面
+	 * @return String
+	 */
 	@RequestMapping(value="/toLockPage",method=RequestMethod.GET)
 	public String toLockPage(){
 		return "/login/lock";
 	}
-	
+
+	/**
+	 * 转向账户管理容器页面
+	 * @return String
+	 */
+	@RequestMapping(value = "/toAccountManageContentPage")
+	public String toAccountManageContentPage(){
+		return "/login/accountManageContentPage";
+	}
+
+	/**
+	 * 转向账户管理页面
+	 * @return String
+	 */
+	@RequestMapping(value="/toAccountManagePage")
+	public String toAccountManagePage(){
+		return "/login/accountManagePage";
+	}
 	/*-------------------setter、getter方法------------------------*/
 	public ILoginService getLoginService() {
 		return loginService;

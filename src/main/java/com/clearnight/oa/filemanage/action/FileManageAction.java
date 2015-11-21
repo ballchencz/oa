@@ -56,7 +56,13 @@ public class FileManageAction {
 		modelAndView.addObject("dirStr", FileManageConsts.FOLDERSTR);
 		return modelAndView;
 	}
-	
+
+	/**
+	 * 添加文件夹
+	 * @param fileBean 文件对象
+	 * @param parentId 上级ID
+	 * @return String
+	 */
 	@RequestMapping(value="/saveFolder",method={RequestMethod.POST},produces={"applicaion/json;charset=utf-8"})
 	@ResponseBody
 	public String saveFolder(FileBean fileBean,String parentId){
@@ -106,6 +112,22 @@ public class FileManageAction {
 		}
 		return b;
 	}
+
+	@RequestMapping(value="/getFileBytesByFileId",method={RequestMethod.GET},produces="image/*;charset=UTF-8")
+	@ResponseBody
+	public byte[] getFileBytesByFileId(String id){
+		byte [] b = null;
+		try {
+			b = this.fileManageService.getFileBeanByteByFileId(id);
+		} catch (JSchException e) {
+			e.printStackTrace();
+		} catch (SftpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return b;
+	}
 	
 	/**
 	 * 删除文件
@@ -143,11 +165,12 @@ public class FileManageAction {
 	@ResponseBody
 	public String uploadFile(String name ,MultipartFile file,FileUpload fileUpload,String parentId){
 		JSONObject jsonObject = new JSONObject();
-		boolean flag = this.fileManageService.uploadFile(name,file,parentId);
-		jsonObject.put("flag",flag);
-		if(flag){
+		FileBean fileBean = this.fileManageService.uploadFile(name,file,parentId,null);
+		if(fileBean!=null){
+			jsonObject.put("flag",true);
 			jsonObject.put("info","上传成功");
 		}else{
+			jsonObject.put("flag",false);
 			jsonObject.put("info","上传失败");
 		}
 		return jsonObject.toJSONString();

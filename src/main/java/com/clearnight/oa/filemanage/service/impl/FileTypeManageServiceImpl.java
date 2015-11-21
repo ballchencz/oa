@@ -165,6 +165,7 @@ public class FileTypeManageServiceImpl implements IFileTypeManageService {
 		SftpUtils sftpUtils = new SftpUtils(sftp.getUserName(), sftp.getPassword(), sftp.getHost(), sftp.getPort());
 		sftpUtils.connect();
 		byte[] b = sftpUtils.getFileByteArrayByFileArray(filePath);
+		sftpUtils.disconnect();
 		return b;
 	}
 

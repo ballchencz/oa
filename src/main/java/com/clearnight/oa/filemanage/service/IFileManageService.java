@@ -57,7 +57,16 @@ public interface IFileManageService {
 	 * @param name 文件名称
 	 * @param file 文件对象
 	 * @param parentId 上级ID
-	 * @return boolean
+	 * @return FileBean
 	 */
-	public boolean uploadFile(String name,MultipartFile file,String parentId);
+	public FileBean uploadFile(String name,MultipartFile file,String parentId,String userId);
+
+	/**
+	 * 根据文件ID获得文件字节数组
+	 * @param fileId 文件ID
+	 * @return byte[]
+	 */
+	public byte[] getFileBeanByteByFileId(String fileId) throws JSchException, SftpException, IOException;
+
+
 }

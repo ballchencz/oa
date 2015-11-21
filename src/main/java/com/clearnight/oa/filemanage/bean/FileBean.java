@@ -1,11 +1,9 @@
 package com.clearnight.oa.filemanage.bean;
+import com.clearnight.oa.user.bean.UserBasic;
+
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+
 /**
  * 文件管理数据封装类
  * @author 陈钊
@@ -56,9 +54,12 @@ public class FileBean {
 	 * 上传时间
 	 */
     private Date uploadTime;
-	
-	
-	
+
+	/**
+	 * 用户头像ID
+	 */
+	private String userIdForUserPhoto;
+
 	/*---------------setter、getter---------------------------------------*/
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 50)
@@ -138,6 +139,13 @@ public class FileBean {
     public void setUploadTime(Date uploadTime){
         this.uploadTime = uploadTime;
     }
-	
-	
+
+	@Column(name="USER_ID_FOR_USER_PHOTO",length = 50)
+	public String getUserIdForUserPhoto() {
+		return userIdForUserPhoto;
+	}
+
+	public void setUserIdForUserPhoto(String userIdForUserPhoto) {
+		this.userIdForUserPhoto = userIdForUserPhoto;
+	}
 }

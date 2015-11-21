@@ -122,10 +122,13 @@
 				}]
             ">
             <div class="ftitle">用户信息</div>
-            <form id="userManagerPage_AMForm" method="post" class="easyui-form">
+            <form id="userManagerPage_AMForm" method="post" class="easyui-form" enctype="multipart/form-data">
 	            <table style="float: left;">
 	            	<tr>
-	            		<td><img style='width:60px;height:60px' src="<%=path%>/images/img8.jpg"></td>
+	            		<td>
+							<img style='width:60px;height:60px' src="<%=path%>/images/img8.jpg"><br/>
+							<input type="file" class="" name="multipartFile"  data-options="buttonText: '选择头像'" accept="image/*" style="width: 60px"/>
+						</td>
 	            	</tr>
 	            </table>
 	            <table style="padding-left:10px;">
@@ -133,7 +136,8 @@
 	            		<td class="amTdLabel">用户名：</td>
 	            		<td class="amTdContent">
 	            			<input type="hidden" name="id"/>
-	            			<input type="text" name="userName" style="width: 150px;" class="easyui-textbox" data-options="validType:'length[0,50]',novalidate:true,required:true,prompt:'用户名应小于50个字符',missingMessage:'用户名不能为空'"/>
+	            			<input type="hidden" name="fileBeanId"/>
+							<input type="text" name="userName" style="width: 150px;" class="easyui-textbox" data-options="validType:'length[0,50]',novalidate:true,required:true,prompt:'用户名应小于50个字符',missingMessage:'用户名不能为空'"/>
 	            		</td>
 	            		<td class="amTdRight">性别：</td>
 	            		<td class="amTdContent">
@@ -250,7 +254,11 @@
 		 * 显示头像
 		 */
 		function showImg(value,row,index){
-			return "<img align='center' style='width:50px;height:50px' src="+contextPath+"/images/img8.jpg"+" />";
+			var url = contextPath+"/images/img8.jpg";
+			if(row.fileBeanId){
+				url = contextPath+"/fileManageAction/getFileBytesByFileId.action?id="+row.fileBeanId;
+			}
+			return "<img align='center' style='width:50px;height:50px' src="+url+" />";
 		};
 		
 		/**

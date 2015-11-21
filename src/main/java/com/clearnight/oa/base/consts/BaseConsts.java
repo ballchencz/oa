@@ -25,7 +25,17 @@ public class BaseConsts {
 	 * Date对象toString时间格式
 	 */
 	public static final String SIMPLEDATEFORMAT_FORMAT_STRING_TWO = "EEE MMM dd HH:mm:ss zzz yyyy";
-	
+
+	/**
+	 * json格式字符串
+	 */
+	public static final String JSON_UTF8_CHARSET = "application/json;charset=UTF-8";
+
+	public static final String INSERT_INFO_SUCCESS = "添加成功";
+	public static final String INSERT_INFO_FAILD = "添加失败";
+	public static final String UPDATE_INFO_SUCCESS = "修改成功";
+	public static final String UPDATE_INFO_FAILD = "修改失败";
+
 
 	
 	

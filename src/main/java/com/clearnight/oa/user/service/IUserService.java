@@ -3,6 +3,7 @@ package com.clearnight.oa.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
 import com.clearnight.oa.base.bean.PageHelper;
 import com.clearnight.oa.user.bean.UserBasic;
 
@@ -47,6 +48,12 @@ public interface IUserService {
 	 * @return Map<String,Object>
 	 */
 	public Map<String, Object> transBeanToMap(Object obj);
-	
+
+	/**
+	 * 根据用户ID获得用户
+	 * @param id 用户ID
+	 * @return UserBasic
+	 */
+	public UserBasic getUserBasicById(String id);
 	
 }
