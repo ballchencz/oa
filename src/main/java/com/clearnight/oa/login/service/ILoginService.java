@@ -38,6 +38,13 @@ public interface ILoginService {
 	 * @return 账户对象集合
 	 */
 	public List<Account> getAccountList();
+
+	/**
+	 *查询不是userId的账户集合
+	 * @param userId 用户ID
+	 * @return List<Account>
+	 */
+	public List<Account> getAccountListByNotIsUserId(String userId);
 	
 	/**
 	 * 根据用户名和密码来验证登陆

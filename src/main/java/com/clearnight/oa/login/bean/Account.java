@@ -14,6 +14,7 @@ public class Account {
 	private String accountName;
 	private String accountPwd;
 	private Date insertDate;
+	private String userId;
 
 	
 	public Account() {
@@ -62,5 +63,14 @@ public class Account {
 
 	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
+	}
+
+	@Column(name = "USER_ID", length = 50)
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

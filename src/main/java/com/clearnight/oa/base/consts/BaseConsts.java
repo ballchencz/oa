@@ -36,6 +36,11 @@ public class BaseConsts {
 	public static final String UPDATE_INFO_SUCCESS = "修改成功";
 	public static final String UPDATE_INFO_FAILD = "修改失败";
 
+	public static final String PROJECT_NAME = "com.clearnight.oa";
+
+	public static final String DATEFORMATSTR_ONE = "yyyy-M-d";
+	public static final String DATEFORMATSTR_TWO = "yyyy-M-d HH:mm:ss";
+
 
 	
 	

@@ -93,6 +93,13 @@ public class LoginServiceImpl implements ILoginService{
 		this.loginDao.deleteAcccount(hql,params);
 	}
 
+	@Override
+	public List<Account> getAccountListByNotIsUserId(String userId) {
+		String hql = "FROM Account t WHERE t.userId =:userId";
+		Map<String,Object> queryParam = new HashMap<String,Object>();
+		queryParam.put("userId",userId);
+		return this.loginDao.getAccountListByNotIsUserId(hql,queryParam);
+	}
 
 	/*-------------------setter、getter方法-----------*/
 	public ILoginDao getLoginDao() {

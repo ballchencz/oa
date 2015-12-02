@@ -77,6 +77,11 @@ public class LoginDaoImpl implements ILoginDao {
 		this.baseDao.delete(hql,params);
 	}
 
+	@Override
+	public List<Account> getAccountListByNotIsUserId(String hql,Map<String,Object> queryParam) {
+		return this.baseDao.find(hql,queryParam);
+	}
+
 	/*---------------setter、getter方法----------------------------*/
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;

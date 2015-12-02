@@ -3,11 +3,12 @@ package com.clearnight.oa.user.service.impl;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.clearnight.oa.base.consts.BaseConsts;
+import com.clearnight.oa.base.dao.IBaseDao;
 import com.clearnight.oa.base.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements IUserService {
 	private IUserDao userDao;
 	@Autowired
 	private IBaseService baseService;
+	@Autowired
+	private IBaseDao baseDao;
 	
 	
 	@Override
@@ -48,11 +51,23 @@ public class UserServiceImpl implements IUserService {
 	
 	
 	@Override
-	public List<UserBasic> getUsersPagenation(UserBasic user,PageHelper pageHelper) {
+	public List<UserBasic> getUsersPagenation(UserBasic user,PageHelper pageHelper,String modelFlag,String beanName) {
 		String hql = "FROM UserBasic t";
 		Map<String,Object> queryMap = new HashMap<String,Object>();
-		
 		hql += this.baseService.whereHQL(user,queryMap);
+		if(modelFlag!=null && !modelFlag.equals("") && beanName!=null&&!beanName.equals("")){
+			String className = BaseConsts.PROJECT_NAME+"."+modelFlag+".bean."+beanName;
+			List<String> userIdList = baseDao.find("SELECT t.userId FROM "+className+" t WHERE t.userId IS NOT NULL AND t.userId !=''");
+			if(userIdList.size()>0){
+				String s = "";
+				for(String id : userIdList){
+					s += "'"+id+"',";
+				}
+				s = s.substring(0,s.length()-1);
+				hql += " AND t.id not in("+s+")";
+			}
+		}
+
 		hql += this.baseService.orderHQL(pageHelper);
 		List<UserBasic> users = userDao.getUsersPagenation(hql, queryMap, pageHelper.getRows(), pageHelper.getPage());
 		return users;

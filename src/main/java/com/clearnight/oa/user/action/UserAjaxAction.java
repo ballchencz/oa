@@ -48,14 +48,16 @@ public class UserAjaxAction {
      * @param user 用户对象
      * @param rows 每页一共有几行
      * @param page 第几页
+	 * @param  modelFlag 模块标示
+	 * @param  beanName 数据实体名称
      * @return ResponseEntity<String> 用户对象集合的json字符串 
      */
     @RequestMapping(value="/getUserPagenation",method=RequestMethod.POST)
-    public ResponseEntity<String> getUserPagenation(UserBasic user,PageHelper pageHelper){
+    public ResponseEntity<String> getUserPagenation(UserBasic user,PageHelper pageHelper,String modelFlag,String beanName){
     	
     	headers.setContentType(mediaType);
     	/*根据参数获得用户对象集合*/
-    	List<UserBasic> users = userService.getUsersPagenation(user,pageHelper);
+    	List<UserBasic> users = userService.getUsersPagenation(user,pageHelper,modelFlag,beanName);
     	JSONObject jsonObject = new JSONObject();
     	JSONArray jsonArray = JSONArray.parseArray(JSONArray.toJSONStringWithDateFormat(users, BaseConsts.dateStringFormat));
     	jsonObject.put("rows", jsonArray.toArray());

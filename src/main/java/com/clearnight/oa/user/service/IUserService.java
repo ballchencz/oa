@@ -33,7 +33,7 @@ public interface IUserService {
 	 * @param page 第几页
 	 * @return ArrayList<UserBasic> 用户基本信息对象集合
 	 */
-	public List<UserBasic> getUsersPagenation(UserBasic user, PageHelper pageHelper);
+	public List<UserBasic> getUsersPagenation(UserBasic user, PageHelper pageHelper,String modelFlag,String beanName);
 	
 	/**
 	 * 根据查询参数获得总记录数

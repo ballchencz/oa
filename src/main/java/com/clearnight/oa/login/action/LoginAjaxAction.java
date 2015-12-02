@@ -129,9 +129,7 @@ public class LoginAjaxAction {
 	@InitBinder
 	protected void initBinder(HttpServletRequest request,
 							  ServletRequestDataBinder binder) throws Exception {
-		DateFormat fmt = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
-		CustomDateEditor dateEditor = new CustomDateEditor(fmt, true);
-		binder.registerCustomEditor(Date.class, dateEditor);
+		baseService.bindDateParameter(request,binder);
 	}
 	
 	/*-------------setter、getter方法-----------*/
