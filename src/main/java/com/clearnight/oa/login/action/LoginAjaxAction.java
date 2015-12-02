@@ -87,7 +87,7 @@ public class LoginAjaxAction {
 	@RequestMapping(value = "/amAccount",method = {RequestMethod.POST},produces = {BaseConsts.JSON_UTF8_CHARSET})
 	@ResponseBody
 	public String amAccount(Account account){
-		String returnValue = "";
+		String returnValue;
 		if(account.getId()!=null&&!account.getId().equals("")){//修改
 			try {
 				account.setAccountPwd(MD5Util.md5(account.getAccountPwd()));
